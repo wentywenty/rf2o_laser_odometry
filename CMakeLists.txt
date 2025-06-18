@@ -53,19 +53,37 @@ set(DEPENDENCIES
   "nav_msgs"
 )
 ament_target_dependencies(${EXECUTABLE_NAME} ${DEPENDENCIES})
-
 ## Declare a cpp library
-add_library(${PROJECT_NAME} src/CLaserOdometry2D.cpp)
+add_library(${PROJECT_NAME} SHARED src/CLaserOdometry2D.cpp)
 
 ## Declare a cpp executable
 ament_target_dependencies(${PROJECT_NAME} ${DEPENDENCIES})
 
-install(TARGETS ${EXECUTABLE_NAME}
-  DESTINATION lib/${PROJECT_NAME})
+install(TARGETS ${EXECUTABLE_NAME} ${PROJECT_NAME}
+  DESTINATION lib)
+
+install(TARGETS ${PROJECT_NAME}
+  DESTINATION ../sha32_driver/lib)
 
 install(
   DIRECTORY launch  
   DESTINATION share/${PROJECT_NAME})
 
-ament_package()
+install(DIRECTORY 
+  include
+  DESTINATION .
+)
 
+install(
+  TARGETS ${PROJECT_NAME}
+  EXPORT export_${PROJECT_NAME}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
+ament_export_include_directories(include)
+
+ament_export_targets(export_${PROJECT_NAME})
+
+ament_package()
